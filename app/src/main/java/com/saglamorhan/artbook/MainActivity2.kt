@@ -3,6 +3,7 @@ package com.saglamorhan.artbook
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -13,10 +14,13 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main2.*
+import java.io.ByteArrayOutputStream
 
 class MainActivity2 : AppCompatActivity() {
 
     var selectedPicture :  Uri?  = null
+    var selectedBitmap : Bitmap? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
@@ -70,13 +74,13 @@ class MainActivity2 : AppCompatActivity() {
                 if (Build.VERSION.SDK_INT >= 28){
 
                     val source = ImageDecoder.createSource(this.contentResolver,selectedPicture!!)
-                    val bitmap = ImageDecoder.decodeBitmap(source)
-                    imageView.setImageBitmap(bitmap)
+                    selectedBitmap = ImageDecoder.decodeBitmap(source)
+                    imageView.setImageBitmap(selectedBitmap)
 
                 }else{
 
-                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,selectedPicture)
-                    imageView.setImageBitmap(bitmap)
+                    selectedBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,selectedPicture)
+                    imageView.setImageBitmap(selectedBitmap)
 
                 }
             }
@@ -87,6 +91,20 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     fun save(view : View){
+
+        val artName = etArtText.text.toString()
+        val artistName = etArtistName.text.toString()
+        val year = etYear.text.toString().toIntOrNull()
+
+        val outputStream = ByteArrayOutputStream()
+        selectedBitmap?.compress(Bitmap.CompressFormat.PNG,50,outputStream)
+        val byteArray = outputStream.toByteArray()
+
+
+
+
+
+
 
     }
 }
