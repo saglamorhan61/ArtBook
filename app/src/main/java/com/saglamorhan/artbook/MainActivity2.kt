@@ -96,15 +96,45 @@ class MainActivity2 : AppCompatActivity() {
         val artistName = etArtistName.text.toString()
         val year = etYear.text.toString().toIntOrNull()
 
-        val outputStream = ByteArrayOutputStream()
-        selectedBitmap?.compress(Bitmap.CompressFormat.PNG,50,outputStream)
-        val byteArray = outputStream.toByteArray()
+        if (selectedBitmap != null){
 
+            val smallBitmap = makeSmallerBitmap(selectedBitmap!!,300)
 
+            val outputStream = ByteArrayOutputStream()
+            smallBitmap?.compress(Bitmap.CompressFormat.PNG,50,outputStream)
+            val byteArray = outputStream.toByteArray()
 
-
-
+        }
 
 
     }
+
+    fun makeSmallerBitmap(image : Bitmap, maximumSize : Int) : Bitmap{
+
+        var width = image.width
+        var height = image.height
+
+        //resim yatay mi yoksa dikey bir resim mi onu anlamaya calisiyoruz
+        val bitmapRatio : Double = width.toDouble() / height.toDouble()
+        if (bitmapRatio > 1){
+
+            //Resim yataydir.
+            width = maximumSize
+            val scaledHeight = width / bitmapRatio
+            height = scaledHeight.toInt()
+
+        }else{
+
+            //Resim dikeydir.
+            height = maximumSize
+            val scaledHeight = height * bitmapRatio
+            width = scaledHeight.toInt()
+
+        }
+
+        return Bitmap.createScaledBitmap(image,width,height,true)
+
+    }
+
+
 }
