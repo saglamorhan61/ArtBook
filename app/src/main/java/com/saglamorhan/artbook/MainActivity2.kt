@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -24,6 +25,46 @@ class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
+
+        val intent = intent
+
+        val info = intent.getStringExtra("info")
+
+        if (info.equals("new")){
+            etArtText.setText("")
+            etArtistName.setText("")
+            etYear.setText("")
+            button.visibility = View.VISIBLE
+
+            val selectedImageBackgroud = BitmapFactory.decodeResource(applicationContext.resources,R.drawable.selectimage)
+            imageView.setImageBitmap(selectedImageBackgroud)
+
+        }else{
+            button.visibility = View.INVISIBLE
+            val selectedId = intent.getIntExtra("id",1)
+
+            val database = this.openOrCreateDatabase("Arts", MODE_PRIVATE,null)
+
+            val cursor = database.rawQuery("SELECT * FROM arts WHERE id = ?", arrayOf(selectedId.toString()))
+            val artNameIx = cursor.getColumnIndex("artname")
+            val artistNameIx = cursor.getColumnIndex("artistname")
+            val yearIx = cursor.getColumnIndex("year")
+            val imageIx = cursor.getColumnIndex("image")
+
+            while (cursor.moveToNext()){
+
+                etArtText.setText(cursor.getString(artNameIx))
+                etArtistName.setText(cursor.getString(artistNameIx))
+                etYear.setText(cursor.getString(yearIx))
+
+                val byteArray = cursor.getBlob(imageIx)
+                val bitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.size)
+                imageView.setImageBitmap(bitmap)
+
+            }
+            cursor.close()
+
+        }
 
 
     }

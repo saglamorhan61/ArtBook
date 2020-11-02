@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.Exception
@@ -32,15 +33,22 @@ class MainActivity : AppCompatActivity() {
             while (cursor.moveToNext()){
                 artNameList.add(cursor.getString(artNameIx))
                 artIdList.add(cursor.getInt(idIx))
-
             }
             //listView i guncelle
             arrayAdapter.notifyDataSetChanged()
             cursor.close()
 
-
         }catch (e: Exception){
             e.printStackTrace()
+        }
+
+        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+
+            val intent =  Intent(this,MainActivity2::class.java)
+            //MainActivt2 ye nereye tiklanarak gidildi anlamak icin menudeki intente farklı buraya farklı veri koyuyoruz
+            intent.putExtra("info","old")
+            intent.putExtra("id",artIdList[position])
+            startActivity(intent)
         }
 
     }
@@ -60,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         if (item.itemId == R.id.add_art_item){
 
             val intent = Intent(this,MainActivity2::class.java)
+            //MainActivt2 ye nereye tiklanarak gidildi anlamak icin menudeki intente farklı buraya farklı veri koyuyoruz
+            intent.putExtra("info","new")
             startActivity(intent)
 
         }
