@@ -161,7 +161,12 @@ class MainActivity2 : AppCompatActivity() {
             }catch (e: Exception){
                 e.printStackTrace()
             }
-            finish() // buraya geri donulmesini engelliyor
+
+            val intent = Intent(this,MainActivity::class.java)
+            // oncesindeki butun activity leri temizlemek icin
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            //finish() // buraya geri donulmesini engelliyor
         }
 
 
